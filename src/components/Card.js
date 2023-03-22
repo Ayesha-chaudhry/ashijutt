@@ -13,6 +13,9 @@ import {
   CardFooter,
   Button,
   HStack,
+  Badge,
+  Alert,
+  CardHeader,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
@@ -22,53 +25,48 @@ import { data } from "../components/data";
 const Cards = () => {
   const [startDate, setStartDate] = useState(new Date());
 
-  function businessDaysFromDate(date, businessDays) {
+  const businessDaysFromDate = (date, businessDays, shipOnWeekends) => {
+    console.log("card date", date, businessDays);
+    console.log("pick date", startDate);
     var counter = 0,
       tmp = new Date(date);
-    while (businessDays >= 0) {
+
+    while (businessDays > 0) {
       tmp.setTime(date.getTime() + counter * 86400000);
-      if (tmp.getDay() == 0 || tmp.getDay() == 6) {
+
+      if (shipOnWeekends || !(tmp.getDay() == 0 || tmp.getDay() == 6)) {
         --businessDays;
       }
       ++counter;
     }
+
     alert(tmp);
-    return tmp;
-  }
+  };
   return (
     <>
-      <Box px={10}>
-        <Heading mt={20} mb={5}>
+      <Box px={10} w={"100%"}>
+        <Heading mt={{ base: 10, lg: 20 }} mb={5}>
           E-Commerce
         </Heading>
-        <DatePicker
-          placeholderText="Select Date"
-          selected={startDate}
-          onChange={(date) => setStartDate(date)}
-          // popperClassName="some-custom-class"
-          // popperPlacement="top-end"
-          // popperModifiers={[
-          //   {
-          //     name: "offset",
-          //     options: {
-          //       offset: [5, 10],
-          //     },
-          //   },
-          //   {
-          //     name: "preventOverflow",
-          //     options: {
-          //       rootBoundary: "viewport",
-          //       tether: false,
-          //       altAxis: true,
-          //     },
-          //   },
-          // ]}
-        />
+        <HStack>
+          <Text>Date:</Text>
+          <DatePicker
+            placeholderText="Select Date"
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+          />
+        </HStack>
       </Box>
-      <SimpleGrid gap={5} columns={4} mt={10}>
+      <SimpleGrid
+        gap={5}
+        columns={{ base: 1, md: 2, lg: 4 }}
+        my={{ base: 8 }}
+        mx={{ base: 8 }}
+        mt={10}
+      >
         {data.map((item) => (
           <Box key={item.productId}>
-            <Card maxW="md">
+            <Card maxW={{ base: "lg", lg: "lg" }}>
               <CardBody>
                 <Image
                   src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
@@ -80,7 +78,7 @@ const Cards = () => {
                   <Box></Box>
                 </Stack>
 
-                <Flex gap={8} mt={10}>
+                <Flex gap={7} mt={10}>
                   <Text color="blue.600" fontWeight={"medium"} fontSize="xl">
                     {item.title}
                   </Text>
@@ -88,7 +86,7 @@ const Cards = () => {
                     {item.inventoryQuantity}
                   </Button>
                 </Flex>
-                <HStack mt={2}>
+                <HStack mt={2} gap={12}>
                   <Text color="blue.600" fontWeight={"medium"} fontSize="xl">
                     {item.desc}
                   </Text>
@@ -96,14 +94,23 @@ const Cards = () => {
                     {item.maxBusinessDaysToShip}
                   </Button>
                 </HStack>
+                {item.shipOnWeekends == true ? (
+                  <Badge colorScheme={"green"}>Ships on weekends</Badge>
+                ) : null}
               </CardBody>
               <Divider />
               <CardFooter>
                 <Button
                   onClick={() => {
-                    businessDaysFromDate(startDate, item.maxBusinessDaysToShip);
+                    // alert("click");
+
+                    businessDaysFromDate(
+                      startDate,
+                      item.maxBusinessDaysToShip,
+                      item.shipOnWeekends
+                    );
                   }}
-                  mx={12}
+                  mx={{ base: 12, md: 12 }}
                   variant="solid"
                   colorScheme="blue"
                 >
