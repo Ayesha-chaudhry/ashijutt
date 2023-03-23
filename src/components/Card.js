@@ -14,13 +14,14 @@ import {
   Button,
   HStack,
   Badge,
-  Alert,
-  CardHeader,
+  chakra,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { data } from "../components/data";
+import { BsFillExclamationCircleFill } from "react-icons/bs";
+import { MdClose } from "react-icons/md";
 
 const Cards = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -39,11 +40,71 @@ const Cards = () => {
       }
       ++counter;
     }
-
     alert(tmp);
   };
   return (
     <>
+      <Flex
+        background={"#ffdb9b"}
+        px={"20px"}
+        py={"20px"}
+        minW={"420px"}
+        position={"absolute"}
+        right={0}
+        top={"10px"}
+        borderRadius={"4px"}
+        borderLeft={"8px"}
+        borderColor={"#ffa502"}
+        overflow="hidden"
+        display={"none"}
+        animate={{
+          animation: "show_slide 1s ease forwards",
+          "@keyframes show_slide": {
+            "0%": { transform: "translateY(100%)" },
+            "40%": { transform: "translateX(-10%)" },
+            "80%": {
+              transform: "translateX(0%)",
+            },
+            "100%": {
+              transform: "translateX(-10px)",
+            },
+          },
+        }}
+      >
+        <chakra.span
+          position={"absolute"}
+          left={"20px"}
+          top={"50%"}
+          transform="translateY(-50%)"
+          color="#ce8500"
+          fontSize={"30px"}
+        >
+          <BsFillExclamationCircleFill />
+        </chakra.span>
+        <chakra.span ml={4} fontSize={"18px"} color="#ce8500" px={"20px"}>
+          Arrival Date: This is alert
+        </chakra.span>
+        <chakra.span
+          position={"absolute"}
+          right={0}
+          top={"50%"}
+          transform="translateY(-50%)"
+          background="#ffd080"
+          // background="red"
+          py={18}
+          px={2}
+        >
+          <chakra.span
+            color="#ce8500"
+            fontSize={"22px"}
+            lineHeight="42px"
+            cursor={"pointer"}
+            _hover={{ bg: "ffc766" }}
+          >
+            <MdClose />
+          </chakra.span>
+        </chakra.span>
+      </Flex>
       <Box px={10} w={"100%"}>
         <Heading mt={{ base: 10, lg: 20 }} mb={5}>
           E-Commerce
@@ -66,7 +127,7 @@ const Cards = () => {
       >
         {data.map((item) => (
           <Box key={item.productId}>
-            <Card maxW={{ base: "lg", lg: "lg" }}>
+            <Card maxW={{ base: "lg", lg: "lg" }} minH="600px">
               <CardBody>
                 <Image
                   src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
@@ -95,7 +156,9 @@ const Cards = () => {
                   </Button>
                 </HStack>
                 {item.shipOnWeekends == true ? (
-                  <Badge colorScheme={"green"}>Ships on weekends</Badge>
+                  <Badge mt={2} colorScheme={"green"}>
+                    Ships on weekends
+                  </Badge>
                 ) : null}
               </CardBody>
               <Divider />
